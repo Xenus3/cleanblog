@@ -18,8 +18,12 @@ app.listen(4000, ()=>{
 console.log('App listening on port 4000')
 })
 
-app.get('/',(req,res)=>{
-    res.render('index');
+app.get('/',async (req,res)=>{
+    const blogposts = await BlogPost.find({});
+    console.log(blogposts);
+    res.render('index', {
+        blogposts: blogposts
+        });
     })
 
 app.get('/about',(req,res)=>{
@@ -41,12 +45,27 @@ app.get('/posts/new',(req,res)=>{
         res.render('create')
         })
 
-app.post('/posts/store',(req,res)=>{
+/*app.post('/posts/store',(req,res)=>{
         // model creates a new doc with browser data
         BlogPost.create(req.body)
         .then((createdBlog) =>{
-        res.redirect('/')})
-    })
+            if(createdBlog) {
+                res.redirect('/')
+            }
+            else {
+                console.log("Blog not created")
+            }
+        })
+        .catch(error => {
+            console.error('Error creating Blog:', error);
+          })
+    })*/
+
+          app.post('/posts/store', async (req,res)=>{
+            await BlogPost.create(req.body);
+            res.redirect('/');
+            })
+            
     
          
     

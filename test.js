@@ -12,7 +12,7 @@ BlogPost.create({
     body: 'This Moroccan couscous recipe is a simplified, vegan version of the traditional dish, filled with sweet raisins, crunchy almonds and It might not be authentic, but it makes for an easy, flavorful side dish. Serve it warm with roasted vegetables or your favorite protein.'
     })*/
 
-    var id = "6710cd519ad0593fab9b0361";
+  /*  var id = "6710cd519ad0593fab9b0361";
 
     BlogPost.findByIdAndDelete(id)
       .then(deletedBlog => {
@@ -24,4 +24,6 @@ BlogPost.create({
       })
       .catch(error => {
         console.error('Error deleting Blog:', error);
-      });
+      });*/
+
+         
