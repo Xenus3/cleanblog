@@ -4,6 +4,14 @@ const app = new express()
 app.use(express.static('public'))
 const ejs = require('ejs')
 app.set('view engine','ejs')
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser')
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended:true}))
+const BlogPost = require('./models/BlogPost.js')
+
+
+mongoose.connect('mongodb://localhost/my_database');
 
 
 app.listen(4000, ()=>{
@@ -28,5 +36,17 @@ app.get('/post',(req,res)=>{
     //res.sendFile(path.resolve(__dirname,'pages/post.html'))
     res.render('post')
     })
-        
+
+app.get('/posts/new',(req,res)=>{
+        res.render('create')
+        })
+
+app.post('/posts/store',(req,res)=>{
+        // model creates a new doc with browser data
+        BlogPost.create(req.body)
+        .then((createdBlog) =>{
+        res.redirect('/')})
+    })
+    
+         
     
