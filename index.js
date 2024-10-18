@@ -20,11 +20,24 @@ console.log('App listening on port 4000')
 
 app.get('/',async (req,res)=>{
     const blogposts = await BlogPost.find({});
-    console.log(blogposts);
+    //console.log(blogposts);
     res.render('index', {
         blogposts: blogposts
         });
     })
+
+// Search bar function
+app.post('/',async (req,res)=>{
+        const search = req.body.search;// we retrieve the search input
+        console.log(search);
+        const blogposts = await BlogPost.find({ title: {$regex: search, $options:'i'} }).exec();//we find only blogs wich have the search input in their title
+        console.log(blogposts);
+        res.render('index', {
+            blogposts: blogposts
+            });
+        })
+
+
 
 app.get('/about',(req,res)=>{
     //res.sendFile(path.resolve(__dirname,'pages/about.html'))
@@ -36,10 +49,13 @@ app.get('/contact',(req,res)=>{
     res.render('contact');
     })
         
-app.get('/post',(req,res)=>{
-    //res.sendFile(path.resolve(__dirname,'pages/post.html'))
-    res.render('post')
+app.get('/post/:id',async (req,res)=>{
+    const blogpost = await BlogPost.findById(req.params.id)
+    res.render('post',{
+        blogpost
+        })
     })
+        
 
 app.get('/posts/new',(req,res)=>{
         res.render('create')

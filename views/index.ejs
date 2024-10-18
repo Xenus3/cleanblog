@@ -19,6 +19,10 @@
                 </div>
             </div>
         </header>
+        <!-----search bar----->
+        <form action="/" method="post">
+            <input type="text" name="search"><button type="submit">Search</button>
+        </form>
         <!-- Main Content-->
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -35,9 +39,11 @@
                                     <%= blogposts[i].body %>
                                 </h3>
                             </a>
-                        <p class="post-meta">Posted by
-                        <a href="#">Start Bootstrap</a>
-                        on September 24, 2019</p>
+                            <p class="post-meta">Posted by
+                            <a href="#"><%= blogposts[i].username %></a>
+                            on <%= blogposts[i].datePosted.toDateString() %></p>
+                            
+                            
                         </div>
                         <hr>
                         <% } %>
