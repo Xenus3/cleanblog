@@ -9,6 +9,9 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 const BlogPost = require('./models/BlogPost.js')
+const fileUpload = require('express-fileupload')
+app.use(fileUpload())
+
 
 
 mongoose.connect('mongodb://localhost/my_database');
@@ -78,8 +81,15 @@ app.get('/posts/new',(req,res)=>{
     })*/
 
           app.post('/posts/store', async (req,res)=>{
-            await BlogPost.create(req.body);
-            res.redirect('/');
+            let image = req.files.image;
+            image.mv(path.resolve(__dirname,'public/assets/img',image.name),async(error)=>{
+                    await BlogPost.create({
+                        ...req.body,
+                        image: '/assets/img/' + image.name
+                    })
+                    res.redirect('/')
+                })
+
             })
             
     
