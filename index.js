@@ -20,6 +20,8 @@ const storePostController = require('./controllers/storePost')
 const searchController = require('./controllers/search')
 const getRegisterPage = require('./controllers/getRegisterPage')
 const registerController = require('./controllers/register')
+const loginController = require('./controllers/login')
+const loginUserController = require('./controllers/loginUser')
 
 
 mongoose.connect('mongodb://localhost/my_database');
@@ -56,6 +58,14 @@ app.get('/auth/register', getRegisterPage)
 // register new user
 
 app.post('/auth/register', registerController)
+
+// get login page
+
+app.get('/auth/login', loginController)
+
+// login user
+
+app.post('/users/login', loginUserController) 
 
 
 
