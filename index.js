@@ -1,5 +1,4 @@
 const express = require('express')
-const path = require('path')
 const app = new express()
 app.use(express.static('public'))
 const ejs = require('ejs')
@@ -8,10 +7,19 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
-const BlogPost = require('./models/BlogPost.js')
 const fileUpload = require('express-fileupload')
 app.use(fileUpload())
-
+// creating a validation middleware
+const validateMiddleware = require("./middleware/validateMiddleware");
+// we want to use this validation middleware only for creating new posts
+app.use('/posts/store',validateMiddleware)
+const newPostController = require('./controllers/newPost')
+const homeController = require('./controllers/home')
+const getPostController = require('./controllers/getPost')
+const storePostController = require('./controllers/storePost')
+const searchController = require('./controllers/search')
+const getRegisterPage = require('./controllers/getRegisterPage')
+const registerController = require('./controllers/register')
 
 
 mongoose.connect('mongodb://localhost/my_database');
@@ -21,77 +29,44 @@ app.listen(4000, ()=>{
 console.log('App listening on port 4000')
 })
 
-app.get('/',async (req,res)=>{
-    const blogposts = await BlogPost.find({});
-    //console.log(blogposts);
-    res.render('index', {
-        blogposts: blogposts
-        });
-    })
+// refactoring get home page
+
+app.get('/', homeController)
 
 // Search bar function
-app.post('/',async (req,res)=>{
-        const search = req.body.search;// we retrieve the search input
-        console.log(search);
-        const blogposts = await BlogPost.find({ title: {$regex: search, $options:'i'} }).exec();//we find only blogs wich have the search input in their title
-        console.log(blogposts);
-        res.render('index', {
-            blogposts: blogposts
-            });
-        })
 
+app.post('/',searchController)
 
+// search for the ID in the database and display it in new page
 
-app.get('/about',(req,res)=>{
-    //res.sendFile(path.resolve(__dirname,'pages/about.html'))
-    res.render('about');
-    })
-
-app.get('/contact',(req,res)=>{
-    //res.sendFile(path.resolve(__dirname,'pages/contact.html'))
-    res.render('contact');
-    })
+app.get('/post/:id',getPostController)
         
-app.get('/post/:id',async (req,res)=>{
-    const blogpost = await BlogPost.findById(req.params.id)
-    res.render('post',{
-        blogpost
-        })
-    })
-        
+// refactoring get new post page
 
-app.get('/posts/new',(req,res)=>{
-        res.render('create')
-        })
+app.get('/posts/new',newPostController)
 
-/*app.post('/posts/store',(req,res)=>{
-        // model creates a new doc with browser data
-        BlogPost.create(req.body)
-        .then((createdBlog) =>{
-            if(createdBlog) {
-                res.redirect('/')
-            }
-            else {
-                console.log("Blog not created")
-            }
-        })
-        .catch(error => {
-            console.error('Error creating Blog:', error);
-          })
-    })*/
+// refactoring post new blog and save it to database
 
-          app.post('/posts/store', async (req,res)=>{
-            let image = req.files.image;
-            image.mv(path.resolve(__dirname,'public/assets/img',image.name),async(error)=>{
-                    await BlogPost.create({
-                        ...req.body,
-                        image: '/assets/img/' + image.name
-                    })
-                    res.redirect('/')
-                })
+app.post('/posts/store', storePostController)
 
-            })
+// get registration page
+
+app.get('/auth/register', getRegisterPage)
+
+// register new user
+
+app.post('/auth/register', registerController)
+
+
+
+          
             
+   
     
-         
+
+    
+    
+   
+        
+                
     
