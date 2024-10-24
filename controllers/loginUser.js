@@ -9,12 +9,13 @@ module.exports = async (req, res) =>{
         if (user){
             bcrypt.compare(password, user.password, (error, same) =>{
                 if(same){ // if passwords match
-                // store user session, will talk about it later
+                // store user session
+                    req.session.userId = user._id;
                     res.redirect('/');
                 }
                 else{
                     res.redirect('/auth/login');
-                    console.log("Wrong Password");
+                    console.log(error);
                 }
             })
         }
